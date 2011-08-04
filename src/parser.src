@@ -1,0 +1,199 @@
+function %NAME%() {}
+
+%NAME%.prototype.parse = function(s, rule) {
+    this._src = s;
+    this._stack = [];
+    this._chains = [];
+    var r = this.$()._o(rule)._();
+    return r ? r.b[0] : null;
+};
+
+%NAME%.prototype._push = function(o) {
+    this._stack.push(o);
+};
+
+%NAME%.prototype._last = function() {
+    return this._chains[this._chains.length - 1];
+};
+
+%NAME%.prototype._fail = function() {
+    this._last().fail = true;
+};
+
+%NAME%.prototype._failed = function() {
+    return this._last().fail;
+};
+
+%NAME%.prototype._apply = function(s) {
+    switch (s.charAt(0)) {
+            case '.': return this._s(s.substring(1));
+            case ',': return this._r(s.substring(1));
+            default: return this[s]();
+    }
+};
+
+%NAME%.prototype._gi = function() {
+    return this._last().l;
+};
+
+%NAME%.prototype._si = function(i) {
+    if (this._chains.length) this._last().l = i;
+};
+
+%NAME%.prototype.$ = function() {
+    var i = this._chains.length ? this._last().l + 1 : 0;
+    this._chains.push({ i: this._stack.length, fail: false, f: i, l: i - 1 });
+    return this;
+};
+
+%NAME%.prototype._ = function() {
+    var c = this._chains.pop(),
+        r = this._stack.splice(c.i);
+    if (!c.fail) {
+        if (c.l >= c.f) this._si(c.l);
+        return { f: c.f, l: c.l, b: r };
+    }
+};
+
+%NAME%.prototype._o = function() {
+    if (!this._failed()) {
+        var a = arguments, b = [], t;
+        for (var i = 0; i < a.length; i++) {
+            if (t = this._apply(a[i])) break;
+        }
+        t !== undefined ? this._push(t) : this._fail();
+    }
+    return this;
+};
+
+%NAME%.prototype._om = function() {
+    if (!this._failed()) {
+        var a = arguments, t, n0, n1 = 0, b = [];
+        do {
+            n0 = n1;
+            for (var i = 0; i < a.length; i++) {
+                if (t = this._apply(a[i])) {
+                    b.push(t);
+                    n1++;
+                    break;
+                }
+            }
+        } while (n0 !== n1);
+        n1 ? this._push(b) : this._fail();
+    }
+    return this;
+};
+
+%NAME%.prototype._zm = function() {
+    if (!this._failed()) {
+        var a = arguments, t, n0, n1 = 0, b = [];
+        do {
+            n0 = n1;
+            for (var i = 0; i < a.length; i++) {
+                if (t = this._apply(a[i])) {
+                    b.push(t);
+                    n1++;
+                    break;
+                }
+            }
+        } while (n0 !== n1);
+        this._push(n1 ? b : null);
+    }
+    return this;
+};
+
+%NAME%.prototype._zo = function() {
+    if (!this._failed()) {
+        var a = arguments, t;
+        for (var i = 0; i < a.length; i++) {
+            if (t = this._apply(a[i])) break;
+        }
+        this._push(t ? t : null);
+    }
+    return this;
+};
+
+%NAME%.prototype._not = function() {
+    if (!this._failed()) {
+        var f = this._gi() + 1,
+            s = this._src,
+            a = arguments,
+            p = new %NAME%(),
+            _s, t, l = s.length + 1;
+        for (var i = f; i < l; i++) {
+            _s = s.substr(i);
+            for (var j = 0; j < a.length; j++) {
+                if ((t = p.parse(_s, a[j])) !== null) {
+                    _s  = s.substring(f, i);
+                    i = l;
+                    break;
+                }
+            }
+        }
+        if (_s) {
+            this._si(f + _s.length - 1);
+            this._push(_s);
+        }
+    }
+    return this;
+};
+
+%NAME%.prototype._s = function(s) {
+    var sl = s.length,
+        f = this._gi() + 1;
+    if (this._src.substr(f, sl) === s) {
+        this._si(f + sl - 1);
+        return s;
+    }
+};
+
+%NAME%.prototype._re = function() {
+    var s = this._src,
+        sl = s.length,
+        f = this._gi() + 1,
+        r = '', c, n, i, j;
+    if (s.charAt(f) === '/') {
+       for (i = f + 1, j = i + 2; i < sl; i++, j++) {
+            c = s.charAt(i);
+            n = s.charAt(j);
+            if (c === '\\' && j !== sl) r += c + n;
+            else if (c !== '/') r += c;
+            else break;
+        }
+        if (i !== sl) {
+            this._si(f + r.length + 1);
+            return r;
+        }
+    }
+};
+
+%NAME%.prototype._c = function() {
+    var s = this._src,
+        f = this._gi() + 1;
+    if (f <= s.length) {
+        this._si(f);
+        return s.charAt(f);
+    }
+};
+
+%NAME%.prototype._r = function(r) {
+    var s = this._src,
+        f = this._gi() + 1,
+        v = '', c,
+        re = new RegExp(r);
+    for (var i = f; i < s.length; i++) {
+        c = s.charAt(i);
+        if (re.test(v + c)) v += c;
+        else break;
+    }
+    if (v) {
+        this._si(f + v.length - 1);
+        this._push(v);
+        return v;
+    }
+};
+
+%NAME%.prototype._join = function(a) {
+    return a ? a.join('') : '';
+};
+
