@@ -4,8 +4,9 @@ function %NAME%() {}
     this._src = s;
     this._stack = [];
     this._chains = [];
+    this._i = { f: 0, l: 0 };
     var r = this.$()._o(rule)._();
-    return r ? r.b[0] : null;
+    return r ? r[0] : null;
 };
 
 %NAME%.prototype._push = function(o) {
@@ -40,6 +41,10 @@ function %NAME%() {}
     if (this._chains.length) this._last().l = i;
 };
 
+%NAME%.prototype._info = function() {
+    return { f: this._i.f, l: this._i.l };
+};
+
 %NAME%.prototype.$ = function() {
     var i = this._chains.length ? this._last().l + 1 : 0;
     this._chains.push({ i: this._stack.length, fail: false, f: i, l: i - 1 });
@@ -51,7 +56,8 @@ function %NAME%() {}
         r = this._stack.splice(c.i);
     if (!c.fail) {
         if (c.l >= c.f) this._si(c.l);
-        return { f: c.f, l: c.l, b: r };
+        this._i = { f: c.f, l: c.l };
+        return r;
     }
 };
 
@@ -192,8 +198,3 @@ function %NAME%() {}
         return v;
     }
 };
-
-%NAME%.prototype._join = function(a) {
-    return a ? a.join('') : '';
-};
-
