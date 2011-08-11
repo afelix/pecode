@@ -194,7 +194,6 @@ function %NAME%() {}
     }
     if (v) {
         this._si(f + v.length - 1);
-        this._push(v);
         return v;
     }
 };
