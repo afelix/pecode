@@ -197,3 +197,11 @@ function %NAME%() {}
         return v;
     }
 };
+
+%NAME%.prototype._join = function(a) {
+    return a ? a.join('') : '';
+};
+
+exports.parse = function(s, rule) {
+    return new %NAME%().parse(s, rule);
+};
