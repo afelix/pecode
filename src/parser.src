@@ -159,10 +159,10 @@ function %NAME%() {}
         f = this._gi() + 1,
         r = '', c, n, i, j;
     if (s.charAt(f) === '/') {
-       for (i = f + 1, j = i + 2; i < sl; i++, j++) {
+       for (i = f + 1, j = i + 1; i < sl; i++, j++) {
             c = s.charAt(i);
             n = s.charAt(j);
-            if (c === '\\' && j !== sl) r += c + n;
+            if (c === '\\' && j !== sl) r += c + n, i++, j++;
             else if (c !== '/') r += c;
             else break;
         }
