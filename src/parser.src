@@ -183,18 +183,12 @@ function %NAME%() {}
 };
 
 %NAME%.prototype._r = function(r) {
-    var s = this._src,
-        f = this._gi() + 1,
-        v = '', c,
-        re = new RegExp(r);
-    for (var i = f; i < s.length; i++) {
-        c = s.charAt(i);
-        if (re.test(v + c)) v += c;
-        else break;
-    }
-    if (v) {
-        this._si(f + v.length - 1);
-        return v;
+    var f = this._gi() + 1,
+        s = this._src.substr(f),
+        rr = new RegExp(r).exec(s);
+    if (rr && rr.index === 0) {
+        this._si(f + rr[0].length - 1);
+        return rr[0];
     }
 };
 
