@@ -199,9 +199,10 @@ function %NAME%() {}
 };
 
 %NAME%.prototype._r = function(r) {
-    var f = this._gi() + 1,
-        s = this._src.substr(f),
-        rr = new RegExp(r).exec(s);
+    var n = r.substr(0, r.indexOf(' ')),
+        f = this._gi() + 1,
+        s = n !== '0' ? this._src.substring(f, f + new Number(n)) : this._src.substr(f),
+        rr = new RegExp(r.substr(n.length + 1)).exec(s);
     if (rr && rr.index === 0) {
         this._si(f + rr[0].length - 1);
         return rr[0];
