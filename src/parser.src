@@ -212,7 +212,7 @@ function %NAME%() {}
     return a ? a.join('') : '';
 };
 
-%NAME%%._cc = function(x, y) {
+%NAME%.prototype._cc = function(x, y) {
     y.forEach(function(e) {
         x = x.concat(e);
     });
