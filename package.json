@@ -1,7 +1,7 @@
 {
     "name" : "pecode",
     "description" : "pecode — PEG + JS experiment",
-    "version" : "0.0.1",
+    "version" : "0.0.2",
     "homepage": "http://github.com/afelix/pecode",
     "author" : "Sergey Kryzhanovsky <skryzhanovsky@ya.ru> (http://github.com/afelix)",
     "repository" : {
